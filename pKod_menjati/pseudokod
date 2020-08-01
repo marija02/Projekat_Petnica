@@ -1,0 +1,123 @@
+
+lvls = 6; //broj razlicitih tekstura na slici
+mapping = imquantize(img, lvls);
+
+T = [];
+
+for i in range(0, lvls){
+	tmp = img(mappings == i);
+
+	V[0] = entr(tmp);
+	V[1] = mean(tmp);
+
+	T = [T V];
+}
+
+X = [];
+d = 20;
+Y = [];
+mirror na ivicama slike MAtlab matlab padding image
+
+output = imbinarize(img_o - img); // gde se razlikuju tu je doslo do photoshopa
+output = img((img - img_o) !+= 0);
+
+output - px je 1 ako je modifikovan, 0 ako je isti kao u originalu
+
+ivice = edge('Canny', img); //binarna 1 - ivica, 0 nema ivice
+
+for i, j in img{
+    tmp = img(mappings == i);
+	B = tmp(i - d : i+d, j - d:j +d);
+
+	//V[0] =  entr(B)
+	V[1] = mean(B)
+	V[2] = var(B)
+
+	V = (B - V).^2
+
+	if (ivice(i, j) == 1){
+		connect = sum(ivice(i-1:i+1, j-1:j+1));
+		V = [V, connect];
+	}
+	else 
+		V=[V, 0]
+
+	X = [X V]
+	Y = [Y; output(i,j)]
+
+}
+
+///////////////////////////////////////////////////////////////////////
+
+// dve klase 0 i 1 , X ulaz, Y izlaz
+
+X_O = X[0 : 100] //70,80%
+X_T = X[101:end]
+
+modifikovani = X_T[Y == 1]
+nemodifikovani = X_T[Y == 0]
+
+P1 = size(modifikovani)/size(X)
+P2 = size(nemodifikovani)size(X)
+
+S1 = cov(modifikovni)
+S2 = cov(nemodig)
+
+M1 = mean(modif)
+M2 = mean(nemodif)
+
+Sw = P1*S1 + P2*S2
+
+Mo = P1 * M1 + P2 * M2 // M0 = mean(X)
+
+Sb = P1(M0 - M1)*(M0 - M1)' + P2*(M0 - M2)(M0 - M2)';
+
+Sm = Sb + SW
+
+// S1, S2 moze da bude (Sb, Sw) , (Sb, Sm), (Sw, Sm)
+
+// sopstveni vektori, sopstvene vrednosti (lambda) eigenvectors, eigenvalues
+[V, lambda] = eig(S2^(-1)*S1)
+
+[sorted ind] = sort(lambda); // sortirano labda i indekse stare
+
+for i in sorted
+	sum(sorted(0:i))/sum(sorted)
+
+// nadjemo n (koliko lambda da se uzme)
+
+for i =0:n-1{
+	A = [A V[ind]]
+}
+
+
+Z = A'*X // preveli X u novi prostor gde mozemo da klasifikujemo
+
+//ulaz Z, izlaz je Y
+
+//Projektovati klasifikator
+
+// Ako se dobije nesto sto lici na normalnu raspodelu - (QQ plot treba da lici na liniju koristis za proveru da li normalna raspodela), onda
+// se za obe klase nadje M, S i radi se Bajesov klasifikator
+
+Z_O = Z[0 : 100]
+Z_T = [101 : end]
+
+Z1 = Z_O[Y == 0]
+Z2 = Z_O[Y == 1]
+
+M1 = mean(Z1) S1 = cov(Z1)
+M2 = mean(Z2) S2 = cov(Z2)
+
+// prelazimo na test skup - slike za testiranje
+res = []
+for i in Z_T:
+	res = [res klasifikuj(Z_T(i))]
+
+broj_gresaka = sum(res != Y)
+
+relativna_greska = broj_gresaka/size(Z_T)
+
+
+
+// Nije normalna raspodela 
